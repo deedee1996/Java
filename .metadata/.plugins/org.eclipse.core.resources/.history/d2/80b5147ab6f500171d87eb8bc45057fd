@@ -1,0 +1,29 @@
+package com.example.demo.controller;
+
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.Product;
+import com.example.demo.ProductService;
+
+@RestController
+public class Controller {
+
+	
+	@Autowired
+	private ProductService ps;
+	
+	ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+	
+	@GetMapping("/")
+	
+	public HashMap<String, Product> getData(){
+		
+		return ps.GetAll();
+	}
+}

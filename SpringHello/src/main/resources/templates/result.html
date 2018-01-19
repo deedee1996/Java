@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Result</h1>
+	
+		<tr th:each="entry : ${listProduct}">
+		    <ul>
+		    	<li><td th:text="${entry.id}">Id: </td>
+		    	<td th:text="${entry.PName}">Name: </td>
+		    	<td th:text="${entry.PAmount}">Amount: </td>
+		    	</li>
+		    </ul>
+		</tr>
+		
+    <a href="/product">Submit another message</a>
+    <p th:text="'Id: ' + ${product.id}" />
+    <p th:text="'PName ' + ${product.PName}" />
+    <p th:text="'PAmount ' + ${product.PAmount}" />
+</body>
+</html>

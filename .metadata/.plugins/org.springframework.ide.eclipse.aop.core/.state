@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="Add"/>
+<aop-project name="Model"/>
+<aop-project name="GetMicroservice"/>
+<aop-project name="RestApi"/>
+</aop-reference-model>

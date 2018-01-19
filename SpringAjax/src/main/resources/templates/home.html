@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+	<link href="../static/css/style.css" th:href="@{/css/style.css}"
+    rel="stylesheet" />
+</head>
+<body>
+	<script
+    src="../static/js/jquery.validate.js"
+    th:src="@{/js/jquery.validate.js}">
+</script>
+<script
+    src="../static/js/additional-methods.js"
+    th:src="@{/js/additional-methods.js}">
+</script>
+    <nav th:replace="layout :: header"></nav>
+
+    <div class="container main-content list" style="width:65%;">
+        <div class="row fixed" style="margin-top:60px; margin-bottom: 10px;">
+            <a href="#" class="btn btn-success pull-left" data-toggle="modal" data-target="#formdata">
+                <span class="glyphicon glyphicon-plus"></span> Thêm sản phẩm
+            </a>
+ 	
+ 	      	 <a style="margin-left:20px;" href="#" th:href="@{/product/export}" class="btn btn-success pull-left">
+                <span style="margin-right:5px;" class="glyphicon glyphicon-export"></span>Xuất Excel
+            </a>
+
+            <form class="form-inline pull-right" action="#" th:action="@{/product/search}" method="GET">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" placeholder="Tìm kiếm..." />
+                </div>
+            </form>
+        </div>
+        <div id="datatable" class="row data" style="height: 500px; overflow:auto;">
+            <table class="table table-bordered table-striped table-hover" id="myTable">
+                <thead class="static">
+                    <tr>
+                        <th>No</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Sửa</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                	<tr th:each="data, iterStat : ${product}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td class="tid" th:text="${data.Id}"></td>
+                        <td class="tname" th:text="${data.Name}"></td>
+                        <td class="tamount" th:text="${data.Amount}"></td>
+                        <td><a href="#" class="edit" data-toggle="modal" data-target="#formedit"  data-product-id="${data.Id}"><span class="glyphicon glyphicon-pencil"></span>
+                        	<div class="eid" th:text="${data.Id}" style="display:none;]"></div>
+                        	<div class="ename" th:text="${data.Name}" style="display:none;]"></div>
+                        	<div class="eamount" th:text="${data.Amount}" style="display:none;]"></div>
+                        </a>
+                        </td>
+ 
+                        <td><a th:href="@{/product/{id}/delete(id=${data.Id})}" id="delete"><span class="glyphicon glyphicon-trash"></span></a></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <button class="btn btn-primary prev" type="submit">Prev</button>
+            <button class="btn btn-primary next" type="submit">Next</button>
+            <div class="totaldata" th:text="${counts}" style="display:none;"></div>
+            <div class="numpage" th:text="${num}" style="display:none;"></div>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+        
+        <div class="modal fade" id="formdata" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top:55px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Thêm sản phẩm
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form role="form" id="ajax" name="formadd" onsubmit="return checkAdd();">
+                  <div class="form-group">
+                    <label for="id">Mã sản phẩm</label>
+                      <input type="text" class="form-control"
+                      id="id" placeholder="Nhập mã sản phẩm" name="addid" required="true"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="name">Tên sản phẩm</label>
+                      <input type="text" class="form-control"
+                          id="name" placeholder="Nhập tên sản phẩm" name="addname" required=""/>
+                  </div>
+                  <div class="form-group">
+                    <label for="amount">Số lượng</label>
+                      <input type="text" class="form-control"
+                          id="amount" placeholder="Nhập số lượng" name="addamount" required=""/>
+                  </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Đóng
+                </button>
+                <button type="button" id="senddata" class="btn btn-primary" onsubmit="return checkAdd();">
+                    Thêm sản phẩm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="formedit" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top:55px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Sửa thông tin
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form role="form" id="ajax" name="editform">
+                  <div class="form-group">
+                    <label for="id">Mã sản phẩm</label>
+                      <input name="id" type="text" class="form-control"
+                      id="id" placeholder="Nhập mã sản phẩm" disabled="disabled" />
+                  </div>
+                  <div class="form-group">
+                    <label for="name">Tên sản phẩm</label>
+                      <input name="name" type="text" class="form-control"
+                          id="name" placeholder="Nhập tên sản phẩm"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="amount">Số lượng</label>
+                      <input name="amount" type="text" class="form-control"
+                          id="amount" placeholder="Nhập số lượng"/>
+                  </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Đóng
+                </button>
+                <button type="button" id="editdata" class="btn btn-primary" onsubmit="return checkEdit();">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+    <!-- /.container -->
+	
+    <footer th:replace="layout :: footer"></footer>
+    <script>
+    
+    		var temp1 = $(".numpage").html();
+    		var temp2 = $(".totaldata").html();
+    		var numpage = parseInt(temp1);
+    		var totaldata = parseInt(temp2);
+    		
+			if(numpage == totaldata){
+				$(".next").prop("disabled", true);
+			}
+			else{
+				$(".next").click(function(){
+					window.location.replace("http://localhost:8080/product/"+ (numpage + 1));
+				});
+			};
+			
+			if(numpage == 1){
+				$(".prev").prop("disabled", true);
+			}
+			else{
+				$(".prev").click(function(){
+					window.location.replace("http://localhost:8080/product/"+ (numpage - 1));
+				});
+			};
+    		
+    	
+    </script>
+    
+    
+    <script>
+		$(document).ready(function(){
+		  $("#myInput").on("keyup", function() {
+		    var value = $(this).val().toLowerCase();
+		    $("#myTable tr").filter(function() {
+		      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		    });
+		  });
+		});
+	</script>
+    
+    
+    <script>
+    $(".edit").click(function(){
+		var id = $(this).find(".eid").html();
+		var name = $(this).find(".ename").html();
+		var amount = $(this).find(".eamount").html();
+    	
+		$("input[name=id]").val(id);
+		$("input[name=name]").val(name);
+		$("input[name=amount]").val(amount);
+    	console.log(id);
+    });
+    </script>
+    
+    <script>
+    	$(document).ready(function(){
+    		$("#editdata").click(function(){
+    			if(checkEdit()){
+    				editPost();
+    			}
+    			
+				function checkEdit(){
+					var name = document.editform.name;
+			    	var amount = document.editform.amount;
+			    	var reg = /^([0-9]*[1-9][0-9]*)$/;
+			    	
+			    	if(name.value == ""){
+			    		alert("Không được bỏ trống");
+			    		name.focus();
+			    		return false;
+			    	}
+			    	if((amount.value == "") || !reg.test(amount.value)){
+						alert("Không hợp lệ");
+						amount.focus();
+						return false;
+					}
+			    	return true;
+				}
+    			
+    			function editPost(){
+    				
+    				var formdata = {};
+    				formdata["id"] = $("input[name=id]").val();
+    				formdata["name"] = $("input[name=name]").val();
+    				formdata["amount"] = $("input[name=amount]").val();
+    				
+    				console.log(formdata);
+    				
+    				$.ajax({
+    					
+    					type : "POST",
+        				contentType : "application/json",
+        				data : JSON.stringify(formdata),
+        				dataType : 'json',
+        				url : "http://localhost:8080/product/edit",
+        				success : function(result){
+        					if(result.status == "done"){
+        						alert("Sửa thành công!");
+        					}
+        					
+        				},
+        				error : function(e){
+        					alert("Lỗi");
+        				}
+    				})
+    			}
+    		})
+    	})
+    </script>
+    
+    <script>
+    
+    </script>
+    <script>
+    jQuery(document).ready(function($) {
+    		$("#senddata").click(function(){
+    			
+    			if(checkAdd()){
+    				ajaxPost();
+    				ClearForm();
+    			}
+    			
+    			function checkAdd(){
+    				var id = document.formadd.addid;
+    				var name = document.formadd.addname;
+    				var amount = document.formadd.addamount;
+    				var reg = /^([0-9]*[1-9][0-9]*)$/;
+    				
+    				if(id.value == ""){
+    					alert("Không được bỏ trống");
+    					id.focus();
+    					return false;
+    				}
+    				if(name.value == ""){
+    					alert("Không được bỏ trống");
+    					name.focus();
+    					return false;
+    				}
+    				if((amount.value == "") || !reg.test(amount.value)){
+    					alert("Không hợp lệ");
+    					amount.focus();
+    					return false;
+    				}
+    				return true;
+    			}
+    			
+    			function ClearForm(){
+    				$("#id").val("");
+    				$("#name").val("");
+        			$("#amount").val("");
+    			}
+    			
+    			function ajaxPost(){
+    				var data = {};
+        			data["id"] = $("#id").val();
+        			data["name"] = $("#name").val();
+        			data["amount"] = $("#amount").val();
+
+        			$.ajax({
+        				type : "POST",
+        				contentType : "application/json",
+        				data : JSON.stringify(data),
+        				dataType : 'json',
+        				url : "http://localhost:8080/product/add",
+            			success : function(result){
+            				if(result.status == "done")
+            				{
+
+            					$("#postResultDiv").html("<p>OK"+result.data.id+"</p>");
+            					alert("Thêm thành công!");
+									
+            				}
+        					else
+        					{
+								$("#postResultDiv").html("<strong>Error</strong>");
+            				}
+            			},
+            			error : function(e){
+            				alert ("Lỗi");
+            			}
+        			})
+        			console.log(data);
+    			}
+    	})
+    })
+    </script>
+    <script>
+    $(document).ajaxStop(function(){
+        window.location.reload();
+    });
+    </script>
+</body>
+</html>

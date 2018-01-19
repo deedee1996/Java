@@ -1,0 +1,65 @@
+Tree {
+/**
+* See Bug 434201: Dark theme: tree must respect the foreground color for items arrows
+*/
+swt-tree-arrows-color:#c7cdd1;
+swt-tree-arrows-mode: triangle;  /* triangle or square */
+
+/* See Bug 434309: Customize the tree/table selection to work properly
+* with the dark theme.
+*
+* Note that the selection foreground is a bit lighter than the regular
+* foreground because our background is also a bit lighter in this case.
+*/
+swt-selection-foreground-color: #f9fafa;
+swt-selection-background-color: #3e464c;
+swt-hot-background-color: #272c30;
+swt-selection-border-color: #65727b;
+swt-hot-border-color: #475057;
+
+flat-scroll-bar: true;
+flat-scroll-bar-thumb: #73828c;
+flat-scroll-bar-page-increment: #3e464c;
+flat-scroll-bar-background-top-level: #202427;
+}
+
+Table {
+/* See Bug 434309: Customize the tree/table selection to work properly
+* with the dark theme.
+*
+* Note that the selection foreground is a bit lighter than the regular
+* foreground because our background is also a bit lighter in this case.
+*/
+swt-selection-foreground-color: #f9fafa;
+
+swt-selection-background-color: #3e464c;
+swt-hot-background-color: #272c30;
+swt-selection-border-color: #65727b;
+swt-hot-border-color: #475057;
+
+flat-scroll-bar: true;
+flat-scroll-bar-thumb: #73828c;
+flat-scroll-bar-page-increment: #3e464c;
+flat-scroll-bar-background-top-level: #202427;
+}
+
+StyledText {
+flat-scroll-bar: true;
+flat-scroll-bar-thumb: #73828c;
+flat-scroll-bar-page-increment: #3e464c;
+flat-scroll-bar-background-top-level: #202427;
+}
+
+ScrolledComposite {
+flat-scroll-bar: true;
+flat-scroll-bar-thumb: #73828c;
+flat-scroll-bar-page-increment: #3e464c;
+flat-scroll-bar-background-top-level: #202427;
+}
+
+ScrolledForm {
+flat-scroll-bar: true;
+flat-scroll-bar-thumb: #73828c;
+flat-scroll-bar-page-increment: #3e464c;
+flat-scroll-bar-background-top-level: #202427;
+}

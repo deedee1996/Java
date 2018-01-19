@@ -1,0 +1,40 @@
+package com.example.dao.impl;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.model.Product;
+
+
+
+@Repository
+public class ProductDAOImpl implements ProductDAO{
+private static List<Product> ds = Arrays.asList(
+new Product("A"),new Product("B"),new Product("C"),new Product("E")
+		);
+	
+	
+
+	@Override
+	public List<Product> getAll() {
+		return ds;
+	}
+
+	@Override
+	public boolean add(Product product) {
+		return ds.add(product);
+	}
+
+	@Override
+	public boolean delete(String Name) {
+		return ds.remove((Product)get(Name));
+	}
+
+	@Override
+	public Product get(String name) {
+		return ds.stream().filter(p->p.getName().equals(name)).findFirst().get();
+	}
+}

@@ -1,0 +1,31 @@
+package com.example.demo;
+
+import java.util.HashMap;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+@Service
+@Scope(value = "singleton")
+public class ProductService {
+
+	
+	private static HashMap<String, Product> map = new HashMap<>();
+	
+	public ProductService() {
+		map.put("A", new Product("A"));
+		map.put("B", new Product("B"));
+		map.put("C", new Product("C"));
+	}
+	
+	public HashMap<String, Product> GetAll(){
+		
+		return map;
+	}
+	
+	public void Add() {
+		
+		map.put("F", new Product("F"));
+	}
+}

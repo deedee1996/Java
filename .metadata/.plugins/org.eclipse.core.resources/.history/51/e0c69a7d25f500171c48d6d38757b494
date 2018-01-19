@@ -1,0 +1,21 @@
+package com.example.demo;
+
+public class Product {
+
+	private String Name;
+
+	
+	public Product(String name) {
+		super();
+		Name = name;
+	}
+
+	synchronized public String getName() {
+		return Name;
+	}
+
+	synchronized public void setName(String name) {
+		Name = name;
+	}
+	
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>WOW-WOW</title>
+</head>
+<body>
+    <h1>HEHE</h1>
+    <form action="#" th:action="@{/product}" th:object="${product}" method="POST" >
+    	<p>Id: <input id="id" type="text" th:field="*{id}" /></p>
+    	<p th:if="${#fields.hasErrors('Id')}" th:errors="*{Id}" >LOL-Error</p>
+    	
+    	<p>PName: <input id="name" type="text" th:field="*{PName}" /></p>
+    	<p th:if="${#fields.hasErrors('PName')}" th:errors="*{PName}" >LOL-Error</p>
+    	
+    	<p>PAmount: <input id="amount" type="text" th:field="*{PAmount}" /></p>
+     	<p th:if="${#fields.hasErrors('PAmount')}" th:errors="*{PAmount}" >LOL-Error</p> 
+    	
+    	
+    	<p><input type="submit" value="submit" onclick="return validate();" /></p>
+    	<p><input type="reset" value="reset" /></p>
+    	
+    </form>
+    <script>
+    	function validate(){
+    		var x = document.getElementById('id').value;
+    		var y = document.getElementById('name').value;
+    		var z = document.getElementById('amount').value;
+    		
+    		if(x =='ccc' | y == null| z == null){
+    			alert("LOL..>>>");
+    			return false;
+    		}
+    		return true;
+    	}
+    </script>
+</body>
+</html>

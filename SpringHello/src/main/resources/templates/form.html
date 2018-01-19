@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+    <nav th:replace="layout :: header"></nav>
+
+    <div class="container main-content form fixed1">
+        <div class="row">
+          <form action="#" th:action="@{/product/{id}/save(id=${editproduct.id})}" th:object="${editproduct}" method="GET">
+            <div class="form-group">
+              <label>Mã SP: ${editproduct.id}</label>
+              
+            </div>
+            <div class="form-group">
+              <label>Tên SP</label>
+              <input type="text" id="iname" class="form-control" th:field="*{PName}" th:text="${editproduct.PName}"/>
+              <p th:if="${#fields.hasErrors('PName')}" th:errors="*{PName}" >Error</p>
+            </div>
+            <div class="form-group">
+              <label>Số Lượng</label>
+              <input type="text" id="iamount" class="form-control" th:field="*{PAmount}" th:text="${editproduct.PAmount}"/>
+              <p th:if="${#fields.hasErrors('PAmount')}" th:errors="*{PAmount}" >Error</p>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="return check();">Lưu Thay Đổi</button>
+          </form>
+        </div>
+    </div><!-- /.container -->
+
+    <footer th:replace="layout :: footer"></footer>
+    <script>
+    	function check(){
+    		var iid = document.getElementById('iname').value;
+    		var amount = document.getElementById('iamount').value;
+    		
+    		if(iid == "" || amount == ""){
+    			alert("Error");
+    			return false;
+    		}
+    		return true;
+    			
+    			
+    	}
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+package com.example.demo;
+
+import java.util.HashMap;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductService {
+
+	
+	public static HashMap<String, Product> map = new HashMap<>();
+	
+	private ProductService() {
+		map.put("A", new Product("A"));
+		map.put("B", new Product("B"));
+		map.put("C", new Product("C"));
+	}
+	
+	public HashMap<String, Product> GetAll(){
+		
+		return map;
+	}
+	
+	public void Add() {
+		
+		map.put("F", new Product("F"));
+	}
+}

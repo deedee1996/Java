@@ -1,0 +1,16 @@
+package com.example.dao.impl;
+
+import java.util.HashMap;
+
+import com.example.dao.ProductDAO;
+import com.example.demo.Product;
+
+public class ProductDAOImpl implements ProductDAO{
+private static HashMap<String, Product> map = new HashMap<>();
+	
+	static {
+		map.put("A", new Product("A"));
+		map.put("B", new Product("B"));
+		map.put("C", new Product("C"));
+	}
+}

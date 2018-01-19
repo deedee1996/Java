@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+	<link href="../static/css/style.css" th:href="@{/css/style.css}"
+    rel="stylesheet" />
+</head>
+<body>
+	<script
+    src="../static/js/jquery.validate.js"
+    th:src="@{/js/jquery.validate.js}">
+</script>
+<script
+    src="../static/js/additional-methods.js"
+    th:src="@{/js/additional-methods.js}">
+</script>
+    <nav th:replace="layout :: header"></nav>
+
+    <div class="container main-content list" style="width:65%;">
+        <div class="row fixed" style="margin-top:60px; margin-bottom: 10px;">
+            <a href="#" class="btn btn-success pull-left" data-toggle="modal" data-target="#formdata">
+                <span class="glyphicon glyphicon-plus"></span> Thêm sản phẩm
+            </a>
+ 	
+ 	      	 <a style="margin-left:20px;" href="#" th:href="@{/product/export}" class="btn btn-success pull-left">
+                <span style="margin-right:5px;" class="glyphicon glyphicon-export"></span>Xuất Excel
+            </a>
+
+            <form class="form-inline pull-right" action="#" th:action="@{/product/search}" method="GET">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" placeholder="Tìm kiếm..." />
+                </div>
+            </form>
+        </div>
+        <div id="datatable" class="row data" style="height: 500px; overflow:auto;">
+            <table class="table table-bordered table-striped table-hover" id="myTable">
+                <thead class="static">
+                    <tr>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Sửa</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                	
+                </tbody>
+            </table>
+            <button class="btn btn-primary prev" type="submit">Prev</button>
+            <button class="btn btn-primary next" type="submit">Next</button>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+        
+        <div class="modal fade" id="formdata" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top:55px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Thêm sản phẩm
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form role="form" id="ajax" name="formadd" onsubmit="return checkAdd();">
+                  <div class="form-group">
+                    <label for="id">Mã sản phẩm</label>
+                      <input type="text" class="form-control"
+                      id="id" placeholder="Nhập mã sản phẩm" name="addid" required="true"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="name">Tên sản phẩm</label>
+                      <input type="text" class="form-control"
+                          id="name" placeholder="Nhập tên sản phẩm" name="addname" required=""/>
+                  </div>
+                  <div class="form-group">
+                    <label for="amount">Số lượng</label>
+                      <input type="text" class="form-control"
+                          id="amount" placeholder="Nhập số lượng" name="addamount" required=""/>
+                  </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Đóng
+                </button>
+                <button type="button" id="senddata" class="btn btn-primary" onsubmit="return checkAdd();">
+                    Thêm sản phẩm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="formedit" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="margin-top:55px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Sửa thông tin
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form role="form" id="ajax" name="editform">
+                  <div class="form-group">
+                    <label for="id">Mã sản phẩm</label>
+                      <input name="id" type="text" class="form-control"
+                      id="id" placeholder="Nhập mã sản phẩm" disabled="disabled" />
+                  </div>
+                  <div class="form-group">
+                    <label for="name">Tên sản phẩm</label>
+                      <input name="name" type="text" class="form-control"
+                          id="name" placeholder="Nhập tên sản phẩm"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="amount">Số lượng</label>
+                      <input name="amount" type="text" class="form-control"
+                          id="amount" placeholder="Nhập số lượng"/>
+                  </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Đóng
+                </button>
+                <button type="button" id="editdata" class="btn btn-primary" onsubmit="return checkEdit();">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+    <!-- /.container -->
+    
+    <script>
+    	$(document).ready(function(){
+    		
+    		page = 1;
+    		getData();
+    		
+    		$(".prev").on('click', function(){
+    			
+    			page --;
+    			$("#myTable tbody").empty();
+    			getData();
+    			
+    		});
+    		
+    		$(".next").on('click', function(){
+    			
+    			page ++;
+    			$("#myTable tbody").empty();
+    			console.log("page : " + page);
+    			getData();
+    			
+    		});
+    		
+    		function getData(){
+    			
+    			$.ajax({
+        			url: "http://localhost:8080/api/product/get/?p=" + page,
+        					
+        		}).then(function(data){
+        			
+        			page == 1 ? $(".prev").prop("disabled", true) : $(".prev").prop("disabled", false);
+
+        			$.each(data, function(i, item){
+        				var newRowContent = '<tr>'+
+    	    									'<td>'+ data[i].id + '</td>' +
+    	    									'<td>' + data[i].name + '</td>' +
+    	    									'<td>' + data[i].quantity + '</td>' +
+    	    									'<td><a href="#" class="editdata" data-toggle="modal" data-target="#formedit"><span class="glyphicon glyphicon-pencil"></span>' +
+    	    									
+    	    									'<div class = "eid" style="display:none;">'+data[i].id+'</div>' +
+    	    									'<div class = "ename" style="display:none;">'+data[i].name+'</div>' +
+    	    									'<div class = "equantity" style="display:none;">'+data[i].quantity+'</div>' +
+    	    									'</a>' +
+    	    									'</td>' +
+    	    									
+    	    									'<td><a href="#" id="delete"><span class="glyphicon glyphicon-trash"></span>' + 
+    	    									'<div class = "did" style="display:none;">'+data[i].id+'</div></a>' +
+    	    									'</td>' +
+        									'</tr>';
+
+        				
+        				$("#myTable tbody").append(newRowContent);
+        				
+        			});
+        			
+        			var nextPage = page + 1;
+        			$.ajax({
+
+        				url: "http://localhost:8080/api/product/get/?p=" + nextPage,
+        				
+        			}).then(function(check){
+        				
+        				$.isEmptyObject(check) ? $(".next").prop("disabled", true) : $(".next").prop("disabled", false);
+        				
+        			});
+        		});
+    		};
+
+    		});
+    </script>
+	
+	<script>
+		
+		$(document).on('click', ".editdata", function(){
+			
+			var id = $(this).find(".eid").html();
+			var name = $(this).find(".ename").html();
+			var quantity = $(this).find(".equantity").html();
+			
+			$("input[name=id]").val(id);
+			$("input[name=name]").val(name);
+			$("input[name=amount]").val(quantity);
+			console.log("haha");
+		});
+
+	</script>
+	
+	<script>
+		$(document).on('click', "#editdata", function(){
+			
+			var id = $("input[name=id]").val();
+			var data = new Object();
+			data.name = $("input[name=name]").val();
+			data.quantity = $("input[name=amount]").val();
+			
+			console.log(id);
+			
+			$.ajax({
+				
+				type : "PUT",
+				contentType : "application/json",
+				data : JSON.stringify(data),
+				dataType : 'json',
+				url : "http://localhost:8080/api/product/update/" +id,
+				
+				success: function(result){
+					
+					console.log("OK");
+					window.location.reload();
+				 
+				},
+				error: function(e){
+					console.log("error");
+					
+				}
+			});
+		});
+		
+		
+	</script>
+	<script>
+		$(document).on('click', "#delete", function(){
+			
+			var id = $(this).find(".did").html();
+			console.log(id);
+			
+			$.ajax({
+				type: "DELETE",
+				url: "http://localhost:8080/api/product/delete/" + id,
+				success: function(){
+					
+					console.log("OK");
+					window.location.reload();
+				},
+				error: function(){
+					console.log("Error");
+				}
+			});
+		})
+	</script>
+	
+	<script>
+		$("#senddata").on('click', function(){
+			var data = new Object();
+			data.id = $("input[name=addid]").val();
+			data.name = $("input[name=addname]").val();
+			data.quantity = $("input[name=addamount]").val();
+			
+			$.ajax({
+				
+				type : "POST",
+				contentType : "application/json",
+				data : JSON.stringify(data),
+				dataType : 'json',
+				url : "http://localhost:8080/api/product/add/",
+				
+				success: function(){
+					
+					console.log("Created");
+					window.location.reload();
+				 
+				},
+				error: function(e){
+					console.log("error");
+					
+				}
+			})
+		})
+	</script>
+    <footer th:replace="layout :: footer"></footer>
+</body>
+</html>
