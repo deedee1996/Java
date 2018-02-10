@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}"
+          rel="stylesheet" />
+</head>
+<body>
+<script
+        src="../static/js/jquery.validate.js"
+        th:src="@{/js/jquery.validate.js}">
+</script>
+<script
+        src="../static/js/additional-methods.js"
+        th:src="@{/js/additional-methods.js}">
+</script>
+<nav th:replace="layout :: header"></nav>
+<div class="container main-content list" style="width:65%;">
+    <div class="row fixed" style="margin-top:60px; margin-bottom: 10px;">
+        <form id="search" class="form-inline search" action="#">
+            <div class="form-group">
+                <input type="text" class="form-control" name="q" placeholder="Tìm kiếm..." />
+                <a id="asearch"  href="#" class="btn btn-warning pull-right" style="margin-left: 5px;">
+                    <span class="glyphicon glyphicon-search"></span>
+                </a>
+            </div>
+        </form>
+    </div>
+    <div id="datatable" class="row data" style="height: 500px; overflow:auto;">
+        <table class="table table-bordered table-striped table-hover" id="myTable">
+            <thead class="static">
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Chiết khấu(%)</th>
+                <th>Sửa</th>
+                <th>Xóa</th>
+            </tr>
+            </thead>
+            <tbody class="list">
+
+            </tbody>
+        </table>
+        <p>Total: <strong id="total"></strong></p>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+    <div class="modal fade" id="formedit" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="margin-top:55px;">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Sửa thông tin
+                    </h4>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form role="form" id="ajax" name="editform">
+                        <div class="form-group">
+                            <label for="id">Tến sản phẩm</label>
+                            <input name="id" type="text" class="form-control"
+                                   id="id" placeholder="Nhập mã sản phẩm" disabled="disabled" />
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label for="prid">Id</label>
+                            <input name="prid" type="text" class="form-control"
+                                   id="prid" placeholder="Nhập mã sản phẩm" disabled="disabled" />
+                        </div>
+                        <div class="form-group">
+                            <label for="unit">Đơn giá</label>
+                            <input name="unit" type="text" class="form-control"
+                                   id="unit" placeholder="Nhập tên sản phẩm"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Số lượng</label>
+                            <input name="quantity" type="text" class="form-control"
+                                   id="quantity" placeholder="Nhập số lượng"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discount">Chiết khấu</label>
+                            <input name="discount" type="text" class="form-control"
+                                   id="discount" placeholder="Nhập số lượng"/>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="button" id="editdata" class="btn btn-primary" >
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+<script>
+    $(document).ready(function(){
+        $("#datatable").hide();
+    })
+</script>
+<script>
+    $("#asearch").on("click", function(){
+        $("#datatable").show();
+        $("#myTable tbody").empty();
+        var data = $("input:first").val();
+        total = 0;
+        $.ajax({
+            url: "http://localhost:8080/api/order",
+            data: {id: data}
+        }).then(function(data){
+            var order = data.orderDetailList;
+            $.each(order, function(i, item){
+                var newRowContent = '<tr>'+
+                    '<td>'+ order[i].product.productName + '</td>' +
+                    '<td>' + order[i].unitPrice + '</td>' +
+                    '<td>' + order[i].quantity + '</td>' +
+                    '<td>' + order[i].discount + '</td>' +
+                    '<td><a href="#" class="editdata" data-toggle="modal" data-target="#formedit"><span class="glyphicon glyphicon-pencil"></span>' +
+                    '<div class = "eid" style="display:none;">'+order[i].product.productName+'</div>' +
+                    '<div class = "ename" style="display:none;">'+order[i].unitPrice+'</div>' +
+                    '<div class = "eproductid" style="display:none;">'+order[i].productId+'</div>' +
+                    '<div class = "equantity" style="display:none;">'+order[i].quantity+'</div>' +
+                    '<div class = "ediscount" style="display:none;">'+order[i].discount+'</div>'+
+                    '</a>' +
+                    '</td>' +
+                    '<td><a href="#" id="delete"><span class="glyphicon glyphicon-trash"></span>' +
+                    '<div class = "did" style="display:none;">'+order[i].productId+'</div></a>' +
+                    '</td>' +
+                    '</tr>';
+                $("#myTable tbody").append(newRowContent);
+                total += order[i].unitPrice*order[i].quantity*(1-order[i].discount/100);
+                $("#total").html(total);
+            });
+        });
+    });
+</script>
+<script>
+    $(document).on('click', ".editdata", function(){
+        var id = $(this).find(".eid").html();
+        var name = $(this).find(".ename").html();
+        var quantity = $(this).find(".equantity").html();
+        var discount = $(this).find(".ediscount").html();
+        var productId = $(this).find(".eproductid").html();
+        var orderId = $("input:first").val();
+        $("input[name=id]").val(id);
+        $("input[name=unit]").val(name);
+        $("input[name=quantity]").val(quantity);
+        $("input[name=discount]").val(discount);
+        $("input[name=prid]").val(productId);
+    });
+</script>
+<script>
+    $("#editdata").on("click", function(){
+        var data = new Object();
+        var productId = $("input[name=prid]").val();
+        var unitPrice = $("input[name=unit]").val();
+        var Quantity =  $("input[name=quantity]").val();
+        var Discount = $("input[name=discount]").val();
+        var orderId = $("input:first").val();
+        var decimal = /^\s*-?[1-9]\d*(\.\d{1,5})?\s*$/;
+        var numbers = /^(?=.*[1-9])\d*$/;
+        var num =  /^(?=.*[0-9])\d*$/;
+        if(unitPrice !=='' || Quantity !== '' || Discount !== '') {
+            if (decimal.test(unitPrice)) {
+                if(numbers.test(Quantity)){
+                    if(num.test(Discount)){
+                        data.OrderId = orderId;
+                        data.ProductId = productId;
+                        data.unitPrice = unitPrice;
+                        data.Quantity = Quantity;
+                        data.Discount = Discount;
+                        $.ajax({
+                           url:"http://localhost:8080/api/order/update",
+                            type:"PUT",
+                            data: JSON.stringify(data),
+                            success:function(){
+                               alert("OK");
+                            },
+                            error:function(){
+                               alert("error");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Error");
+                        return;
+                    }
+                }
+                else {
+                    alert("Error");
+                    return;
+                }
+            }
+            else {
+                alert("Error");
+                return;
+            }
+        }
+        else {
+            alert("Error");
+            return;
+        }
+    });
+</script>
+<script>
+    $(document).on("click", "#delete", function() {
+        var orderId = $("input:first").val();
+        var productId = $(this).find(".did").html();
+        $("#myTable tbody").empty();
+        $.ajax({
+            url: "http://localhost:8080/api/delete",
+            data: {orderId: orderId, productId: productId}
+        }).then(function (data) {
+            var order = data.orderDetailList;
+            total = 0;
+            $.each(order, function (i) {
+                total += order[i].unitPrice * order[i].quantity*(1-order[i].discount/100);
+                $("#total").html(total);
+                var newRowContent = '<tr>' +
+                    '<td>' + order[i].product.productName + '</td>' +
+                    '<td>' + order[i].unitPrice + '</td>' +
+                    '<td>' + order[i].quantity + '</td>' +
+                    '<td>' + order[i].discount + '</td>' +
+                    '<td><a href="#" class="editdata" data-toggle="modal" data-target="#formedit"><span class="glyphicon glyphicon-pencil"></span>' +
+                    '<div class = "eid" style="display:none;">' + order[i].product.productName + '</div>' +
+                    '<div class = "ename" style="display:none;">' + order[i].unitPrice + '</div>' +
+                    '<div class = "eproductid" style="display:none;">' + order[i].productId + '</div>' +
+                    '<div class = "equantity" style="display:none;">' + order[i].quantity + '</div>' +
+                    '<div class = "ediscount" style="display:none;">' + order[i].discount + '</div>' +
+                    '</a>' +
+                    '</td>' +
+                    '<td><a href="#" id="delete"><span class="glyphicon glyphicon-trash"></span>' +
+                    '<div class = "did" style="display:none;">' + order[i].productId + '</div></a>' +
+                    '</td>' +
+                    '</tr>';
+                $("#myTable tbody").append(newRowContent);
+            });
+        });
+    })
+</script>
+<footer th:replace="layout :: footer"></footer>
+</body>
+</html>

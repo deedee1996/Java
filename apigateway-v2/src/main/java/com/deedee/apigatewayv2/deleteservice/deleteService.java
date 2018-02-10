@@ -12,7 +12,13 @@ public class deleteService implements IdoWork {
     @Override
     public HashMap<String, Product> doWork(Object... id) {
 
-        Data.product.remove(id[0]);
+        String[] data = null;
+        if(id.getClass().isArray()){
+            
+            data  = (String[]) id[0];
+            
+        }
+        Data.product.remove(data[0]);
         return Data.product;
     }
 }

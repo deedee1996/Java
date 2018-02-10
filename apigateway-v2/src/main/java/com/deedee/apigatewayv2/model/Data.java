@@ -14,5 +14,11 @@ public class Data {
         product.put("P4", new Product("P4", "PEVC", 320));
         product.put("P5", new Product("P5", "PGVC", 240));
         product.put("P6", new Product("P6", "PSVC", 220));
+        product.put("P06", new Product("P06", "PSVC", 220));
+        product.put("P56", new Product("P76", "PSVC", 220));
+        product.put("P96", new Product("P56", "PSVC", 220));
+        product.put("P76", new Product("P36", "PSVC", 220));
+        product.put("P66", new Product("P26", "PSVC", 220));
+
     }
 }
